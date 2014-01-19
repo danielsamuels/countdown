@@ -18,14 +18,18 @@ class Countdown:
     consonant_pile = ''
     board = ''
 
-    def __init__(self, board=None):
+    def __init__(self, board=None, word_file=None):
         try:
+            if word_file:
+                raise IOError()
+
             self.words = pickle.load(file('pickles/words.pickle'))
             self.len_words = pickle.load(file('pickles/len_words.pickle'))
             loaded_from = 'pickle.'
         except IOError:
             # Get a list of words.
-            with open('/usr/share/dict/words', 'rb') as f:
+            word_file = word_file or '/usr/share/dict/words'
+            with open(word_file, 'rb') as f:
                 for line in f:
                     # Ignore any which have more than 9 letters.
                     line = line.strip().lower()
@@ -55,6 +59,9 @@ class Countdown:
             len(self.words),
             loaded_from
         )
+
+        if board == 'load':
+            exit()
 
         self.build_vowel_pile()
         self.build_consonant_pile()
@@ -192,6 +199,8 @@ class Countdown:
 
 
     def solve(self):
+        self.board = self.board.lower()
+
         # The first thing we want to do is limit our word set to only contain
         # words which have the letters in our board.
         board_regex = re.compile(r'[^{}]+'.format(self.board))
@@ -230,6 +239,9 @@ class Countdown:
             iteration = 0
             level_words = 0
 
+            if total_words > 5:
+                break
+
             for word in itertools.permutations(self.board, x):
                 permutation = ''.join(word)
 
@@ -249,7 +261,13 @@ class Countdown:
 
 
 if __name__ == '__main__':
-    try:
+
+    if len(sys.argv) == 2:
+        # We're using a manual board. (main.py potatoes)
         Countdown(sys.argv[1])
-    except IndexError:
+    elif len(sys.argv) == 3:
+        # We're loading a new word list in. (main.py load file.txt)
+        Countdown(sys.argv[1], sys.argv[2])
+    else:
+        # Lets just play automatically.
         Countdown()
