@@ -20,8 +20,8 @@ class Countdown:
 
     def __init__(self, board=None):
         try:
-            self.words = pickle.load(file('words.pickle'))
-            self.len_words = pickle.load(file('len_words.pickle'))
+            self.words = pickle.load(file('pickles/words.pickle'))
+            self.len_words = pickle.load(file('pickles/len_words.pickle'))
             loaded_from = 'pickle.'
         except IOError:
             # Get a list of words.
@@ -47,8 +47,8 @@ class Countdown:
                     except KeyError:
                         self.len_words[len(line)] = [line]
 
-            pickle.dump(self.words, file('words.pickle', 'w'))
-            pickle.dump(self.len_words, file('len_words.pickle', 'w'))
+            pickle.dump(self.words, file('pickles/words.pickle', 'w'))
+            pickle.dump(self.len_words, file('pickles/len_words.pickle', 'w'))
             loaded_from = 'words list.'
 
         print 'Loaded {:,} words from {}'.format(
@@ -77,7 +77,7 @@ class Countdown:
 
     def build_vowel_pile(self):
         try:
-            self.vowel_pile = pickle.load(file('vowel_pile.pickle'))
+            self.vowel_pile = pickle.load(file('pickles/vowel_pile.pickle'))
         except IOError:
             # The amount of times a single letter appears within the pile varies
             # from letter to letter according to it's frequency within natural
@@ -105,11 +105,11 @@ class Countdown:
                 for letter in self.vowels
             )
 
-            pickle.dump(self.vowel_pile, file('vowel_pile.pickle', 'w'))
+            pickle.dump(self.vowel_pile, file('pickles/vowel_pile.pickle', 'w'))
 
     def build_consonant_pile(self):
         try:
-            self.consonant_pile = pickle.load(file('consonant_pile.pickle'))
+            self.consonant_pile = pickle.load(file('pickles/consonant_pile.pickle'))
         except IOError:
             # The amount of times a single letter appears within the pile varies
             # from letter to letter according to it's frequency within natural
@@ -137,7 +137,7 @@ class Countdown:
                 for letter in self.consonants
             )
 
-            pickle.dump(self.consonant_pile, file('consonant_pile.pickle', 'w'))
+            pickle.dump(self.consonant_pile, file('pickles/consonant_pile.pickle', 'w'))
 
     def generate_tiles(self, consonants=None, vowels=None):
         # Minimum requirements for character selections are 3 vowels and
