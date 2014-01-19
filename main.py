@@ -192,6 +192,26 @@ class Countdown:
 
 
     def solve(self):
+        # The first thing we want to do is limit our word set to only contain
+        # words which have the letters in our board.
+        board_regex = re.compile(r'[^{}]+'.format(self.board))
+
+        word_list = []
+        len_words = {}
+        for word in self.words:
+            # print re.search(board_regex, word)
+            if re.search(board_regex, word) == None:
+                word_list.append(word)
+
+                try:
+                    len_words[len(word)].append(word)
+                except KeyError:
+                    len_words[len(word)] = [word]
+
+        print 'Filtered to {} words.'.format(len(word_list))
+
+        # print word_list
+
         # Manipulate the board into every possible order and check if it's a
         # valid word according to the word list.
         print 'Attempting to solve {}.'.format(self.board)
@@ -204,7 +224,7 @@ class Countdown:
             consonants=self.consonants
         ))
 
-        for x in range(9, 6, -1):
+        for x in range(9, 4, -1):
             print 'Trying {} letter words.'.format(x)
 
             iteration = 0
@@ -218,17 +238,13 @@ class Countdown:
                 consonant_test = re.search(pattern, permutation)
 
                 if consonant_test is None and permutation not in found:
-                    if permutation in self.len_words[x]:
+                    if x in len_words and permutation in len_words[x]:
                         print permutation
 
                         found.add(permutation)
                         level_words += 1
                         total_words += 1
 
-            print '{} {} character words found.'.format(
-                level_words,
-                x,
-            )
         print '{} words found: {}'.format(total_words, found)
 
 
