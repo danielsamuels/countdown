@@ -5,19 +5,24 @@ import os
 
 from main import Countdown
 
+
 class Screenread:
     iteration = 0
 
     def ocr(self):
+        # We can use this to stop ourselves getting into an infinite loop.
         self.iteration += 1
 
+        # Get the co-ordinates for the "Nexus 5" window and the crop to just
+        # the letters of the app.
         bbox = win32gui.GetWindowRect(win32gui.FindWindow(None, "Nexus 5"))
         bbox = (bbox[0] + 45, bbox[1] + 325, bbox[2] - 70, bbox[3] - 200)
 
         grab = ImageGrab.grab(bbox)
 
 
-        # test
+        # Convert all non-white pixels to black, this greatly improves the
+        # effectiveness of the OCR library.
         data = grab.getdata()
 
         new_data = []
@@ -30,12 +35,9 @@ class Screenread:
 
         grab.putdata(new_data)
 
-        grab.save('test.png', quality=100)
-
         text = image_to_string(grab).strip().lower()
 
-        os.remove('test.png')
-
+        # Only try and solve if we have 9 letters, otherwise try to OCR again.
         if len(text) == 9:
             Countdown(text)
         else:
