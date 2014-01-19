@@ -1,6 +1,7 @@
 import ImageGrab, ImageEnhance, Image
 from pytesser import image_to_string
 import win32gui
+import win32com.client
 import os
 
 from main import Countdown
@@ -17,6 +18,10 @@ class Screenread:
         # the letters of the app.
         bbox = win32gui.GetWindowRect(win32gui.FindWindow(None, "Nexus 5"))
         bbox = (bbox[0] + 45, bbox[1] + 325, bbox[2] - 70, bbox[3] - 200)
+
+        # Bring the application to the front.
+        shell = win32com.client.Dispatch("WScript.Shell")
+        shell.AppActivate("Nexus 5")
 
         grab = ImageGrab.grab(bbox)
 
